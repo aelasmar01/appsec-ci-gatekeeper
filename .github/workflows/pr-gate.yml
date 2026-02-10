@@ -1,0 +1,81 @@
+name: appsec-ci-gatekeeper
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  appsec-gate:
+    name: AppSec Gate Pipeline (Skeleton)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare output directories
+        run: |
+          mkdir -p results
+          mkdir -p reports
+
+      - name: SAST scan (Semgrep placeholder)
+        run: |
+          echo "Running Semgrep scan placeholder..."
+          cat > results/semgrep.json <<'EOF'
+          { "status": "placeholder", "tool": "semgrep" }
+          EOF
+
+      - name: Dependency and SBOM scan (Trivy placeholder)
+        run: |
+          echo "Running Trivy scan placeholder..."
+          cat > results/trivy.json <<'EOF'
+          { "status": "placeholder", "tool": "trivy" }
+          EOF
+          cat > results/sbom.cdx.json <<'EOF'
+          { "status": "placeholder", "type": "cyclonedx" }
+          EOF
+
+      - name: Secrets scan (Gitleaks placeholder)
+        run: |
+          echo "Running Gitleaks scan placeholder..."
+          cat > results/gitleaks.json <<'EOF'
+          { "status": "placeholder", "tool": "gitleaks" }
+          EOF
+
+      - name: IaC scan (Checkov placeholder)
+        run: |
+          echo "Running Checkov scan placeholder..."
+          cat > results/checkov.json <<'EOF'
+          { "status": "placeholder", "tool": "checkov" }
+          EOF
+
+      - name: Normalize findings (placeholder)
+        run: |
+          echo "Running normalization placeholder..."
+          cat > reports/report.json <<'EOF'
+          { "status": "placeholder", "stage": "normalize" }
+          EOF
+
+      - name: Evaluate policies (placeholder)
+        run: |
+          echo "Running policy evaluation placeholder..."
+          cat > reports/decision.json <<'EOF'
+          { "status": "pass", "stage": "policy-evaluation", "placeholder": true }
+          EOF
+
+      - name: Post PR comment (placeholder)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR comment placeholder: consolidated feedback would be posted here."
+
+      - name: Upload placeholder artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: appsec-placeholder-artifacts
+          path: |
+            results/*.json
+            reports/*.json
