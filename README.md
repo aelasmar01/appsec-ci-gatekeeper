@@ -16,6 +16,24 @@ foundation initialized.
 - `demo/` intentionally vulnerable sample app and IaC
 - `reports/` generated JSON/HTML outputs
 
+## Task Runner
+
+Use `make` targets to run pipeline stages:
+
+- `make scan`
+- `make normalize`
+- `make report`
+- `make local-run`
+
+Each command calls a matching script under `scripts/`.
+
+On Windows, use PowerShell task execution:
+
+- `.\scripts\task-run.ps1 scan`
+- `.\scripts\task-run.ps1 normalize`
+- `.\scripts\task-run.ps1 report`
+- `.\scripts\task-run.ps1 local-run`
+
 ## Next Steps
 
-implement scanners, normalization, policy gate enforcement, and PR feedback.
+Implement scanners, normalization, policy gate enforcement, and PR feedback.
