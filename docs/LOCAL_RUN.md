@@ -1,22 +1,58 @@
 # Local Usage
 
-This repository supports both `make` (Unix-like shells) and PowerShell task execution (Windows).
+This repository supports both CI-stage placeholder scripts and a one-command local workflow run using `act`.
 
 ## Prerequisites
 
-- Option A (Unix-like): `make` + `bash`
-- Option B (Windows): PowerShell
+- Docker running locally
+- `act` installed and available in PATH
+- Optional: `make` + `bash` for stage-level script calls
 
-## Commands (Unix-like)
+Install details:
+- `act`: `https://github.com/nektos/act`
+
+## One-Click Local Workflow
+
+```bash
+make local-run
+```
+
+```powershell
+.\scripts\local-run.ps1
+```
+
+Optional event override:
+
+```bash
+bash scripts/local-run.sh workflow_dispatch
+```
+
+```powershell
+.\scripts\local-run.ps1 workflow_dispatch
+```
+
+Optional custom runner image:
+
+```bash
+ACT_PLATFORM_IMAGE=catthehacker/ubuntu:act-latest bash scripts/local-run.sh
+```
+
+```powershell
+$env:ACT_PLATFORM_IMAGE="catthehacker/ubuntu:act-latest"
+.\scripts\local-run.ps1
+```
+
+## Stage-Level Commands
+
+Unix-like:
 
 ```bash
 make scan
 make normalize
 make report
-make local-run
 ```
 
-## Commands (PowerShell)
+Windows PowerShell:
 
 ```powershell
 .\scripts\task-run.ps1 scan
@@ -25,16 +61,4 @@ make local-run
 .\scripts\task-run.ps1 local-run
 ```
 
-Each target currently delegates to a script in `scripts/`:
-
-- `scripts/scan.sh`
-- `scripts/normalize.sh`
-- `scripts/report.sh`
-- `scripts/local-run.sh`
-- `scripts/scan.ps1`
-- `scripts/normalize.ps1`
-- `scripts/report.ps1`
-- `scripts/local-run.ps1`
-- `scripts/task-run.ps1`
-
-These scripts are placeholders in this phase and are expanded in later commits.
+Both `scripts/local-run.sh` and `scripts/local-run.ps1` execute the same workflow via `act`.

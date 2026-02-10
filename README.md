@@ -27,6 +27,11 @@ Use `make` targets to run pipeline stages:
 
 Each command calls a matching script under `scripts/`.
 
+For a one-command local workflow execution using GitHub Actions semantics, run:
+
+- `bash scripts/local-run.sh`
+- `.\scripts\local-run.ps1`
+
 On Windows, use PowerShell task execution:
 
 - `.\scripts\task-run.ps1 scan`
