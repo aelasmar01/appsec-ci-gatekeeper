@@ -1,0 +1,47 @@
+name: scan-semgrep
+description: Run Semgrep SAST scan and export JSON results.
+
+inputs:
+  target-dir:
+    description: Directory to scan.
+    required: false
+    default: .
+  config:
+    description: Semgrep ruleset path or registry reference.
+    required: false
+    default: policies/sast/semgrep.yml
+  output-file:
+    description: Output file path for Semgrep JSON results.
+    required: false
+    default: results/semgrep.json
+  semgrep-version:
+    description: Pinned Semgrep CLI version.
+    required: false
+    default: 1.67.0
+
+runs:
+  using: composite
+  steps:
+    - name: Install Semgrep
+      shell: bash
+      run: |
+        set -euo pipefail
+        python3 -m pip install --disable-pip-version-check "semgrep==${{ inputs.semgrep-version }}"
+
+    - name: Run Semgrep scan
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "${{ inputs.output-file }}")"
+        semgrep scan \
+          --config "${{ inputs.config }}" \
+          --json \
+          --output "${{ inputs.output-file }}" \
+          "${{ inputs.target-dir }}"
+
+    - name: Confirm output
+      shell: bash
+      run: |
+        set -euo pipefail
+        test -f "${{ inputs.output-file }}"
+        echo "Semgrep results written to ${{ inputs.output-file }}"

@@ -1,0 +1,23 @@
+rules:
+  - id: python-eval-detected
+    message: Avoid eval because it can execute untrusted input.
+    severity: ERROR
+    languages:
+      - python
+    pattern: eval(...)
+    metadata:
+      category: security
+      cwe:
+        - CWE-95
+
+  - id: javascript-eval-detected
+    message: Avoid eval because it can execute untrusted input.
+    severity: ERROR
+    languages:
+      - javascript
+      - typescript
+    pattern: eval(...)
+    metadata:
+      category: security
+      cwe:
+        - CWE-95
