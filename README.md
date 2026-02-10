@@ -4,7 +4,7 @@ Secure CI/CD control layer demonstrating an AppSec-owned merge gate for pull req
 
 ## Project Status
 
-Phase 0 foundation initialized.
+foundation initialized.
 
 ## Repository Layout
 
@@ -18,4 +18,4 @@ Phase 0 foundation initialized.
 
 ## Next Steps
 
-Follow the phased commit roadmap to implement scanners, normalization, policy gate enforcement, and PR feedback.
+implement scanners, normalization, policy gate enforcement, and PR feedback.
