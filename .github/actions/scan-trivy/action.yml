@@ -1,0 +1,62 @@
+name: scan-trivy
+description: Run Trivy dependency scan and generate CycloneDX SBOM.
+
+inputs:
+  target-dir:
+    description: Directory to scan.
+    required: false
+    default: .
+  output-file:
+    description: Output file path for Trivy vulnerability JSON results.
+    required: false
+    default: results/trivy.json
+  sbom-file:
+    description: Output file path for CycloneDX SBOM JSON.
+    required: false
+    default: results/sbom.cdx.json
+  trivy-version:
+    description: Pinned Trivy CLI version.
+    required: false
+    default: 0.55.2
+
+runs:
+  using: composite
+  steps:
+    - name: Install Trivy
+      shell: bash
+      run: |
+        set -euo pipefail
+        curl -sfL "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh" \
+          | sh -s -- -b /usr/local/bin "v${{ inputs.trivy-version }}"
+        trivy --version
+
+    - name: Run Trivy vulnerability scan
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "${{ inputs.output-file }}")"
+        trivy fs \
+          --scanners vuln \
+          --format json \
+          --output "${{ inputs.output-file }}" \
+          "${{ inputs.target-dir }}"
+
+    - name: Generate CycloneDX SBOM
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "${{ inputs.sbom-file }}")"
+        trivy fs \
+          --scanners vuln \
+          --format cyclonedx \
+          --output "${{ inputs.sbom-file }}" \
+          "${{ inputs.target-dir }}"
+
+    - name: Confirm outputs
+      shell: bash
+      run: |
+        set -euo pipefail
+        test -f "${{ inputs.output-file }}"
+        test -f "${{ inputs.sbom-file }}"
+        echo "Trivy results written to ${{ inputs.output-file }}"
+        echo "SBOM written to ${{ inputs.sbom-file }}"
