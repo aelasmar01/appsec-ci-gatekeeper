@@ -1,0 +1,73 @@
+name: scan-checkov
+description: Run Checkov IaC scan and export JSON results.
+
+inputs:
+  target-dir:
+    description: Directory to scan for IaC misconfigurations.
+    required: false
+    default: .
+  output-file:
+    description: Output file path for Checkov JSON results.
+    required: false
+    default: results/checkov.json
+  checkov-version:
+    description: Pinned Checkov version.
+    required: false
+    default: 3.2.264
+  skip-check:
+    description: Optional comma-separated check IDs to skip.
+    required: false
+    default: ""
+  baseline-file:
+    description: Optional Checkov baseline file path.
+    required: false
+    default: ""
+  framework:
+    description: Optional framework filter (terraform,kubernetes,cloudformation,etc.).
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Checkov
+      shell: bash
+      run: |
+        set -euo pipefail
+        python3 -m pip install --disable-pip-version-check "checkov==${{ inputs.checkov-version }}"
+        checkov --version
+
+    - name: Run Checkov scan
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p "$(dirname "${{ inputs.output-file }}")"
+
+        CMD=(
+          checkov
+          --directory "${{ inputs.target-dir }}"
+          --output json
+          --output-file-path "${{ inputs.output-file }}"
+          --quiet
+        )
+
+        if [ -n "${{ inputs.framework }}" ]; then
+          CMD+=( --framework "${{ inputs.framework }}" )
+        fi
+
+        if [ -n "${{ inputs.skip-check }}" ]; then
+          CMD+=( --skip-check "${{ inputs.skip-check }}" )
+        fi
+
+        if [ -n "${{ inputs.baseline-file }}" ]; then
+          CMD+=( --baseline "${{ inputs.baseline-file }}" )
+        fi
+
+        "${CMD[@]}"
+
+    - name: Confirm output
+      shell: bash
+      run: |
+        set -euo pipefail
+        test -f "${{ inputs.output-file }}"
+        echo "Checkov results written to ${{ inputs.output-file }}"
