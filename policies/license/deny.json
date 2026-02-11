@@ -1,0 +1,8 @@
+{
+  "denied_licenses": [
+    "AGPL-3.0",
+    "GPL-2.0",
+    "GPL-3.0",
+    "SSPL-1.0"
+  ]
+}
